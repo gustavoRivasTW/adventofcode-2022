@@ -10,19 +10,20 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"sort"
 	"strconv"
 	"strings"
 )
 
-func leer_archivo() string {
-	datosComoBytes, err := ioutil.ReadFile("../input-day-01.txt")
+func readFile() string {
+	bytes, err := ioutil.ReadFile("../input-day-01.txt")
 	if err != nil {
 		log.Fatal(err)
 	}
-	return string(datosComoBytes)
+	return string(bytes)
 }
 
-func maxValue(values []int) int {
+func max(values []int) int {
 	maxVal := 0
 	for _, v := range values {
 		if maxVal < v {
@@ -32,24 +33,39 @@ func maxValue(values []int) int {
 	return maxVal
 }
 
-func ejercicio_uno() {
-	datos := leer_archivo()
-	lines := strings.Split(datos, "\n")
+func reverse(values []int) []int {
+	reverse_values := []int{}
+	for i := (len(values) - 1); i >= 0; i-- {
+		reverse_values = append(reverse_values, values[i])
+	}
+	return reverse_values
+}
 
-	var elf_calories []int
-	var line_values []int
+func topThree(values []int) []int {
+	sort.Ints(values[:]) // convert array to slice and sort the array
+	reverse_values := reverse(values)
+	return reverse_values[:3]
+}
+
+func ejercicio_uno() {
+	data := readFile()
+	lines := strings.Split(data, "\n")
+
+	var total_calories_per_elf []int
+	var calories_per_elf []int
 	for _, line := range lines {
 		if line == "" {
-			sum_calories_elf := sum(line_values)
-			elf_calories = append(elf_calories, int(sum_calories_elf))
-			line_values = []int{}
+			total_calories_per_elf = append(total_calories_per_elf, sum(calories_per_elf))
+			calories_per_elf = []int{}
 		} else {
-			lineVal, _ := strconv.Atoi(line)
-			line_values = append(line_values, int(lineVal))
+			calories, _ := strconv.Atoi(line)
+			calories_per_elf = append(calories_per_elf, int(calories))
 		}
 	}
-	value := maxValue(elf_calories)
-	fmt.Println(value)
+	value := max(total_calories_per_elf)
+	fmt.Printf("Max Value : %d", value)
+	sumTop := sum(topThree(total_calories_per_elf))
+	fmt.Printf("\nSum Top 3 : %d", sumTop)
 
 }
 
