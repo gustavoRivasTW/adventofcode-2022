@@ -46,8 +46,46 @@ func countPairFullyContains(given []string) int {
 	return counter
 }
 
+func generateArrayWithPair(pair string) []int {
+	values := getArrayFromPair(pair)
+	start := values[0]
+	end := values[1]
+	numbersInPair := []int{}
+	for start <= end {
+		numbersInPair = append(numbersInPair, start)
+		start++
+	}
+	return numbersInPair
+}
+func CheckPairOverlap(firstPair string, secondPair string) bool {
+	firstArray := generateArrayWithPair(firstPair)
+	secondArray := generateArrayWithPair(secondPair)
+	for _, v := range firstArray {
+		for _, x := range secondArray {
+			if v == x {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func countPairOverlap(given []string) int {
+	counter := 0
+	for _, pairLine := range given {
+		pairs := strings.Split(pairLine, ",")
+		if CheckPairOverlap(pairs[0], pairs[1]) {
+			counter++
+		}
+	}
+	return counter
+}
+
 func main() {
 	data := utils2.ReadFileLines("../input-data.txt")
-	total := countPairFullyContains(data)
-	fmt.Printf("%d", total)
+	totalcontains := countPairFullyContains(data)
+	totalOverlap := countPairOverlap(data)
+
+	fmt.Printf("countPairFullyContains: %d, countPairOverlap: %d ", totalcontains, totalOverlap)
 }
