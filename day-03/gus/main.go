@@ -1,24 +1,14 @@
 package main
 
 import (
+	utils2 "adventofcode/utils"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strings"
 )
 
 const fileName = "../input-data.txt"
 
 var itemTypePriority map[string]int
-
-func readFileLines() []string {
-	bytes, err := ioutil.ReadFile(fileName)
-	if err != nil {
-		log.Fatal(err)
-	}
-	lines := strings.Split(string(bytes), "\n")
-	return lines
-}
 
 func generateItemTypePriority() map[string]int {
 	letters := "abcdefghijklmnopqrstuvwxyz"
@@ -77,7 +67,7 @@ func sumRepeatedItemPriority(data []string) int {
 }
 
 func main() {
-	data := readFileLines()
+	data := utils2.ReadFileLines(fileName)
 	total := sumRepeatedItemPriority(data)
 	fmt.Printf("%d", total)
 }
