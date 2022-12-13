@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -21,12 +22,18 @@ func readActualStack(given []string) map[string][]string {
 	return actualStack
 }
 
-func translateMovesToNumbers(move string) Movement {
-	return Movement{}
+func newMovement(move string) Movement {
+	words := strings.Split(move, " ")
+	return Movement{toInt(words[3]), toInt(words[5]), toInt(words[1])}
 }
 
 func moveCratesFromStackToAnother(stacks map[string][]string, movement Movement) map[string][]string {
 	newStack := make(map[string][]string)
 
 	return newStack
+}
+
+func toInt(s string) int {
+	v, _ := strconv.Atoi(s)
+	return int(v)
 }

@@ -22,14 +22,14 @@ func TestReadActualStack(t *testing.T) {
 	}
 }
 
-func TestTranslateMovesToNumbers(t *testing.T) {
+func TestNewMovement(t *testing.T) {
 	given := "move 1 from 2 to 1"
 	expected := Movement{
 		origin:  2,
 		destiny: 1,
 		amount:  1,
 	}
-	actual := translateMovesToNumbers(given)
+	actual := newMovement(given)
 
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("got %v want %v given '%s'", actual, expected, given)
