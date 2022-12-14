@@ -8,7 +8,6 @@ import (
 
 func TestReadActualStack(t *testing.T) {
 	given := utils.ReadFileLines("../stacks.txt")
-
 	expected := map[string][]string{
 		"1": []string{"Z", "N"},
 		"2": []string{"M", "C", "D"},
@@ -29,15 +28,15 @@ func TestNewMovement(t *testing.T) {
 		destiny: 1,
 		amount:  1,
 	}
+
 	actual := newMovement(given)
 
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("got %v want %v given '%s'", actual, expected, given)
 	}
-
 }
 
-func testMoveCratesFromStackToAnother(t *testing.T) {
+func TestMoveCratesFromStackToAnother(t *testing.T) {
 	stacks := map[string][]string{
 		"1": []string{"Z", "N"},
 		"2": []string{"P"},
@@ -47,7 +46,6 @@ func testMoveCratesFromStackToAnother(t *testing.T) {
 		destiny: 2,
 		amount:  2,
 	}
-
 	expected := map[string][]string{
 		"1": []string{},
 		"3": []string{"P", "Z", "N"},
@@ -58,5 +56,4 @@ func testMoveCratesFromStackToAnother(t *testing.T) {
 	if !reflect.DeepEqual(actual, expected) {
 		t.Errorf("got %s want %s given %s and %v", actual, expected, stacks, movement)
 	}
-
 }
