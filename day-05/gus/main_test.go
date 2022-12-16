@@ -60,7 +60,7 @@ func TestMoveCratesFromStackToAnother(t *testing.T) {
 		{
 			movement: "move 3 from 3 to 1",
 			expected: map[string][]string{
-				"1": {"Z", "N", "Q", "R", "K", "C", "A"},
+				"1": {"Z", "N", "Q", "R", "A", "C", "K"},
 				"2": {"P", "Y", "G", "T"},
 				"3": {},
 			},

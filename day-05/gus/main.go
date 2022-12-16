@@ -29,11 +29,18 @@ func newMovement(move string) Movement {
 }
 
 func moveCratesFromStackToAnother(stacks map[string][]string, movement Movement) map[string][]string {
-	//Append to Destiny
+	//collect crates and revert o
+	var collectCrates []string
 	for i := 1; i <= movement.amount; i++ {
 		lastCrate := stacks[movement.origin][len(stacks[movement.origin])-i]
-		stacks[movement.destiny] = append(stacks[movement.destiny], lastCrate)
+		collectCrates = append(collectCrates, lastCrate)
 	}
+	reverse(collectCrates)
+	//Append to Destiny
+	for _, v := range collectCrates {
+		stacks[movement.destiny] = append(stacks[movement.destiny], v)
+	}
+
 	// Remove from Origin
 	stacks[movement.origin] = stacks[movement.origin][:len(stacks[movement.origin])-movement.amount]
 
@@ -53,6 +60,13 @@ func concatTopCrates(stacks map[string][]string) string {
 func toInt(s string) int {
 	v, _ := strconv.Atoi(s)
 	return int(v)
+}
+
+func reverse(ss []string) {
+	last := len(ss) - 1
+	for i := 0; i < len(ss)/2; i++ {
+		ss[i], ss[last-i] = ss[last-i], ss[i]
+	}
 }
 
 func main() {
