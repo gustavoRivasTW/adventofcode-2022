@@ -1,17 +1,16 @@
 package main
 
 import (
-	"adventofcode/utils"
 	"reflect"
 	"testing"
 )
 
 func TestReadActualStack(t *testing.T) {
-	given := utils.ReadFileLines("../stacks.txt")
+	given := []string{"Z,N", "M,C,D", "P"}
 	expected := map[string][]string{
-		"1": []string{"Z", "N"},
-		"2": []string{"M", "C", "D"},
-		"3": []string{"P"},
+		"1": {"Z", "N"},
+		"2": {"M", "C", "D"},
+		"3": {"P"},
 	}
 
 	actual := readActualStack(given)
@@ -24,8 +23,8 @@ func TestReadActualStack(t *testing.T) {
 func TestNewMovement(t *testing.T) {
 	given := "move 1 from 2 to 1"
 	expected := Movement{
-		origin:  2,
-		destiny: 1,
+		origin:  "2",
+		destiny: "1",
 		amount:  1,
 	}
 
@@ -37,23 +36,68 @@ func TestNewMovement(t *testing.T) {
 }
 
 func TestMoveCratesFromStackToAnother(t *testing.T) {
-	stacks := map[string][]string{
-		"1": []string{"Z", "N"},
-		"2": []string{"P"},
-	}
-	movement := Movement{
-		origin:  1,
-		destiny: 2,
-		amount:  2,
-	}
-	expected := map[string][]string{
-		"1": []string{},
-		"3": []string{"P", "Z", "N"},
+
+	priorityTests := []struct {
+		movement string
+		expected map[string][]string
+	}{
+		{
+			movement: "move 1 from 2 to 1",
+			expected: map[string][]string{
+				"1": {"Z", "N", "Q", "R", "T"},
+				"2": {"P", "Y", "G"},
+				"3": {"A", "C", "K"},
+			},
+		},
+		{
+			movement: "move 1 from 1 to 2",
+			expected: map[string][]string{
+				"1": {"Z", "N", "Q"},
+				"2": {"P", "Y", "G", "T", "R"},
+				"3": {"A", "C", "K"},
+			},
+		},
+		{
+			movement: "move 3 from 3 to 1",
+			expected: map[string][]string{
+				"1": {"Z", "N", "Q", "R", "K", "C", "A"},
+				"2": {"P", "Y", "G", "T"},
+				"3": {},
+			},
+		},
 	}
 
-	actual := moveCratesFromStackToAnother(stacks, movement)
+	for _, tt := range priorityTests {
+		t.Run("Movement "+tt.movement, func(t *testing.T) {
+			given := map[string][]string{
+				"1": {"Z", "N", "Q", "R"},
+				"2": {"P", "Y", "G", "T"},
+				"3": {"A", "C", "K"},
+			}
+			movement := newMovement(tt.movement)
 
-	if !reflect.DeepEqual(actual, expected) {
-		t.Errorf("got %s want %s given %s and %v", actual, expected, stacks, movement)
+			actual := moveCratesFromStackToAnother(given, movement)
+
+			if !reflect.DeepEqual(actual, tt.expected) {
+				t.Errorf("got %s want %s given %s and %v", actual, tt.expected, given, movement)
+			}
+		})
+	}
+
+}
+
+func TestConcatTopCrates(t *testing.T) {
+	given := map[string][]string{
+		"1": {"Z", "N", "Q", "R"},
+		"2": {"P", "Y", "G", "T"},
+		"4": {"N", "M", "I"},
+		"3": {"A", "C", "K"},
+	}
+	expected := "RTKI"
+
+	actual := concatTopCrates(given)
+
+	if actual != expected {
+		t.Errorf("got %s want %s given %s ", actual, expected, given)
 	}
 }
