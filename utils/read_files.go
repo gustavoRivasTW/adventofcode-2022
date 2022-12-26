@@ -6,11 +6,14 @@ import (
 	"strings"
 )
 
-func ReadFileLines(fileName string) []string {
+func ReadFile(fileName string) string {
 	bytes, err := ioutil.ReadFile(fileName)
 	if err != nil {
 		log.Fatal(err)
 	}
-	lines := strings.Split(string(bytes), "\n")
+	return string(bytes)
+}
+func ReadFileLines(fileName string) []string {
+	lines := strings.Split(ReadFile(fileName), "\n")
 	return lines
 }

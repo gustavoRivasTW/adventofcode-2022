@@ -37,15 +37,26 @@ func TestSplitStringInMiddle(t *testing.T) {
 }
 
 func TestFindRepeatedItem(t *testing.T) {
-	given := "abcafg"
-	parts := splitStringInMiddle(given)
-	expected := "a"
+	t.Run("Find repeated in two items", func(t *testing.T) {
+		given := []string{"abc", "afg"}
+		expected := "a"
+		actual := findRepeatedItem(given)
 
-	actual := findRepeatedItem(parts[0], parts[1])
+		if actual != expected {
+			t.Errorf("got %s want %s given %v", actual, expected, given)
+		}
+	})
 
-	if actual != expected {
-		t.Errorf("got %s want %s given %s", actual, expected, given)
-	}
+	t.Run("Find repeated in three items", func(t *testing.T) {
+		given := []string{"vJrwpWtwJgWrhcsFMMfFFhFp", "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", "PmmdzqPrVvPwwTWBwg"}
+		expected := "r"
+
+		actual := findRepeatedItem(given)
+
+		if actual != expected {
+			t.Errorf("got %s want %s given %v", actual, expected, given)
+		}
+	})
 }
 
 func TestSumRepeatedItemPriority(t *testing.T) {
@@ -56,6 +67,29 @@ func TestSumRepeatedItemPriority(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("got %d want %d given %v", actual, expected, given)
+	}
+}
+
+func TestSumRepeatedItemInGroup(t *testing.T) {
+	given := []string{"vJrwpWtwJgWrhcsFMMfFFhFp", "jqHRNqRjqzjGDLGLrsFMfFZSrLrFZsSL", "PmmdzqPrVvPwwTWBwg",
+		"wMqvLMZHhHMvwLHjbvcjnnSBnvTQFn", "ttgJtRGJQctTZtZT", "CrZsJsPPZsGzwwsLwLmpwMDw"}
+	expected := 18 + 52 //r,Z
+
+	actual := sumRepeatedItemInGroup(given)
+
+	if actual != expected {
+		t.Errorf("got %d want %d given %v", actual, expected, given)
+	}
+}
+
+func TestRemoveDuplicatedElements(t *testing.T) {
+	given := "MMFFFp"
+	expected := "MFp"
+
+	actual := removeDuplicatedElements(given)
+
+	if actual != expected {
+		t.Errorf("got %s want %s given %s", actual, expected, given)
 	}
 
 }

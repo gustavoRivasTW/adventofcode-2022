@@ -45,29 +45,79 @@ func splitStringInMiddle(data string) []string {
 	return []string{partOne, partTwo}
 }
 
-func findRepeatedItem(partOne string, partTwo string) string {
+func findRepeatedItem(parts []string) string {
 	var itemRepetead string
-	for _, v := range strings.Split(partOne, "") {
-		if strings.Contains(partTwo, v) {
-			itemRepetead = v
+	letterCounter := make(map[string]int)
+	firstPart := removeDuplicatedElements(parts[0])
+	for _, l := range strings.Split(firstPart, "") {
+
+		for _, p := range parts[1:] {
+			if strings.Contains(p, l) {
+				letterCounter[l] += 1
+			}
+		}
+	}
+	itemRepeteadCounter := 0
+	for k, v := range letterCounter {
+		if itemRepetead == "" {
+			itemRepetead = k
+			itemRepeteadCounter = v
+			continue
+		}
+
+		if v > itemRepeteadCounter {
+			itemRepetead = k
+			itemRepeteadCounter = v
 		}
 	}
 	return itemRepetead
+}
+
+func removeDuplicatedElements(data string) string {
+	letters := strings.Split(data, "")
+	s := ""
+	for _, l := range letters {
+		if !strings.Contains(s, l) {
+			s += l
+		}
+	}
+	return s
 }
 
 func sumRepeatedItemPriority(data []string) int {
 	sum := 0
 	for _, row := range data {
 		splitRow := splitStringInMiddle(row)
-		repeteadItem := findRepeatedItem(splitRow[0], splitRow[1])
+		repeteadItem := findRepeatedItem(splitRow)
 		sum += calculateItemTypePriority(repeteadItem)
 	}
 
 	return sum
 }
 
-func main() {
+func sumRepeatedItemInGroup(data []string) int {
+	sum := 0
+	for i := 0; (i + 3) <= len(data); {
+		group := []string{data[i], data[i+1], data[i+2]}
+		repeteadItem := findRepeatedItem(group)
+		sum += calculateItemTypePriority(repeteadItem)
+		i += 3
+	}
+	return sum
+}
+
+func partOne() {
 	data := utils2.ReadFileLines(fileName)
 	total := sumRepeatedItemPriority(data)
 	fmt.Printf("%d", total)
+}
+
+func partTwo() {
+	data := utils2.ReadFileLines(fileName)
+	total := sumRepeatedItemInGroup(data)
+	fmt.Printf("%d", total)
+}
+
+func main() {
+	partTwo()
 }
