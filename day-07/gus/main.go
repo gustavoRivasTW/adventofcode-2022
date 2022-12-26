@@ -9,60 +9,6 @@ import (
 	"strings"
 )
 
-// type File struct {
-// 	name string
-// }
-
-// type Directorie struct {
-// 	name  string
-// 	files []File
-// }
-
-// type Node struct {
-// 	text     string
-// 	parent   *Node
-// 	files    []string
-// 	children []*Node
-// }
-
-// func dataParser(data string) Node {
-// 	cmds := strings.Split(data, "\n")
-// 	rootNode := Node{text: "/"}
-// 	actualNode := Node{parent: &rootNode}
-// 	rootNode.children = append(actualNode.children, &actualNode)
-// 	for _, cmd := range cmds {
-// 		switch {
-// 		case strings.HasPrefix(cmd, "$ cd"):
-// 			params := strings.Split(cmd, " ")
-// 			if params[2] == ".." {
-// 				//"go back")
-// 				actualNode = *actualNode.parent
-// 			} else if params[2] == "/" {
-// 				//...
-// 			} else {
-// 				//"change directory")
-// 				for _, n := range actualNode.children {
-// 					if n.text == params[2] {
-// 						actualNode = *n
-// 					}
-// 				}
-// 			}
-// 		case strings.HasPrefix(cmd, "$ ls"):
-// 			//"list directory")
-// 		case strings.HasPrefix(cmd, "dir"):
-// 			name := strings.Split(cmd, " ")
-// 			newNode := Node{text: name[1], parent: &actualNode}
-// 			actualNode.children = append(actualNode.children, &newNode)
-// 		default:
-// 			//is file
-// 			actualNode.files = append(actualNode.files, cmd)
-// 		}
-
-// 	}
-
-// 	return rootNode
-// }
-
 type Node struct {
 	childs []*Node
 	parent *Node
@@ -201,10 +147,10 @@ func filterFolderBySizeMoreEqualThan(n *Node, minSize int) []*Node {
 	return folders
 }
 
-func getTotalSize(data string) int {
+func getTotalOfFolderBySizeLessThan(data string, amount int) int {
 	node := buildDirectory(data)
 	node.calculateSizePerDirectory()
-	folder := filterFolderBySizeLessThan(node, 100000)
+	folder := filterFolderBySizeLessThan(node, amount)
 
 	var total int
 	for _, k := range folder {
@@ -213,12 +159,9 @@ func getTotalSize(data string) int {
 	return total
 }
 
-func FindFolderSizeNearTo(data string, number int) int {
-	node := buildDirectory(data)
-	node.calculateSizePerDirectory()
-	fmt.Printf("\n Total Size: %d ", node.Data.size)
+func findFolderSizeNearTo(n *Node, number int) int {
 
-	folder := filterFolderBySizeMoreEqualThan(node, number)
+	folder := filterFolderBySizeMoreEqualThan(n, number)
 
 	var sizes []int
 	for _, k := range folder {
@@ -228,14 +171,23 @@ func FindFolderSizeNearTo(data string, number int) int {
 	fmt.Println(sizes)
 	return sizes[0]
 }
-
-func main() {
+func partOne() {
 	//Remover primer $ cd /
 	data := utils.ReadFile("../input-data.txt")
-	size := getTotalSize(data)
+	size := getTotalOfFolderBySizeLessThan(data, 100000)
 	fmt.Printf("Total Size %d", size)
-	smallest := FindFolderSizeNearTo(data, 8381165)
+}
 
+func partTwo() {
+	//Remover primer $ cd /
+	data := utils.ReadFile("../input-data.txt")
+	node := buildDirectory(data)
+	node.calculateSizePerDirectory()
+	fmt.Printf("\n Total Size: %d ", node.Data.size)
+	required := (70000000 - node.Data.size - 30000000) * -1 // (Total - Used - Required)
+	smallest := findFolderSizeNearTo(node, required)
 	fmt.Printf("\nSmallest Elimination %d", smallest)
-
+}
+func main() {
+	partTwo()
 }

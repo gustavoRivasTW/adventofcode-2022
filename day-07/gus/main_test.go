@@ -91,24 +91,22 @@ $ cd ..`
 
 func TestCalculateSizePerDirectory(t *testing.T) {
 	dir := `$ ls
-1 data.txt
 dir folder-1
 dir folder-2
 $ cd folder-1
 $ ls
+dir folder-11
+$ cd folder-11
+$ ls
+1 data.txt
 2 data.txt
 $ cd ..`
 	node := buildDirectory(dir)
-
+	expected := 3
 	node.calculateSizePerDirectory()
-	actualChildOne := node.childs[0]
 
-	if node.Data.size != 3 {
-		t.Errorf("got %d want %d", node.Data.size, 3)
-	}
-
-	if actualChildOne.Data.files[0].size != 2 {
-		t.Errorf("got %d want %d", actualChildOne.Data.files[0].size, 2)
+	if node.Data.size != expected {
+		t.Errorf("got %d want %d", node.Data.size, expected)
 	}
 }
 
@@ -137,7 +135,7 @@ $ ls
 7214296 k`
 	expected := 95437
 
-	actual := getTotalSize(given)
+	actual := getTotalOfFolderBySizeLessThan(given, 100000)
 
 	if actual != expected {
 		t.Errorf("got %d want %d", actual, expected)
@@ -147,12 +145,11 @@ $ ls
 
 /*
 Total 	 70.000.000
-used 	 1.989.474
+used 	 41.072.511
 required 30.000.000
-free	 21.618.835
-missing   8.381.165
-		  8.381.165	
-option	  8.582.270
+free	 28.927.489
+missing   1.072.511
+option	  
 */
 
 func TestFindFolderSizeNearTo(t *testing.T) {
